@@ -7,7 +7,7 @@ Requirements
 * PHP 5 >= 5.1.2.
 * PowerSchool >= 6.0.0; PowerSchool <= 6.2.1.6
 
-PowerSchool 7.x is **not** yet supported by PowerAPI-php.
+PowerSchool 7.x is **not** supported by PowerAPI-php. Support is planned.
 
 Usage
 -----
@@ -16,7 +16,7 @@ A basic demo is provided in `demo.php`
 ### Initializing the library ###
 	require_once('PowerAPI.php');			// Include the library
 	
-	$ps = new PowerAPI("http://psserver/");	// Specify the server's URL
+	$ps = new PowerAPI("http://[Your PowerSchool URL]/");	// Specify the server's URL
 
 **Note:** It's important that you end the server URL with a slash (/)
 
