@@ -5,7 +5,7 @@ Library for fetching information from PowerSchool SISes.
 Requirements
 ------------
 * PHP 5 >= 5.1.2.
-* PowerSchool >= 6.0.0; PowerSchool <= 6.2.1.6
+* PowerSchool >= 6.0.0; PowerSchool <= 6.2.2
 
 PowerSchool 7.x is **not** yet supported by PowerAPI-php, though support is planned.
 
