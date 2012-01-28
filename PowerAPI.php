@@ -91,6 +91,14 @@ class PowerAPI {
 	}
 	
 	/* Scraping */
+	private function stripA($strip) {
+		if (substr($strip, 0, 2) == "<a") {
+			preg_match('/<a (.*?)>(.*?)<\/a>/s', $strip, $stripped);
+			return $stripped[2];
+		} else {
+			return $strip;
+		}
+	}
 	
 	public function parseGrades($result) {
 		/* Parse different terms */
@@ -102,7 +110,6 @@ class PowerAPI {
 		unset($slices[1]);
 		unset($slices[$slicesCount-2]);
 		unset($slices[$slicesCount-1]);
-		
 		$slices = array_merge(array(), $slices);
 		
 		/* Parse classes */
@@ -116,22 +123,45 @@ class PowerAPI {
 		unset($classes[2]);
 		
 		foreach ($classes as $class) {
-			preg_match('/<td align="left">(.*?)<br>/s', $class[2], $name);
-			$name = $name[1];
+			preg_match('/<td align="left">(.*?)<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $class[2], $classData);
+			$name = $classData[1];
 			
-			preg_match_all('/<td><a href="scores.html(.*?)">(.*?)<\/a>/s', $class[2], $scores, PREG_SET_ORDER);
+			preg_match_all('/<td>(.*?)<\/td>/s', $class[2], $databits, PREG_SET_ORDER);
 			
-			$data = Array('name' => $name);
+			$data = Array(
+				'name' => $name,
+				'teacher' => Array(
+					'name' => $classData[4],
+					'email' => $classData[3]
+					),
+				'period' => $databits[0][1],
+				'absences' => $this->stripA($databits[count($databits)-2][1]),
+				'tardies' => $this->stripA($databits[count($databits)-1][1])
+			);
+			
+			$databitsCount = count($databits);
+			unset($databits[0]);
+			unset($databits[$databitsCount-2]);
+			unset($databits[$databitsCount-1]);
+			$databits = array_merge(Array(), $databits);
+			
+			$scores = Array();
+			foreach ($databits as $scorein) {
+				if ($scorein[1] !== "&nbsp;" && $scorein[1] !== "." && $scorein[1] !== "<br>") { // Make sure we aren't getting empty score boxes
+					preg_match('/<a href="(.*?)">(.*?)<\/a>/s', $scorein[1], $score);
+					$scores[] = $score;
+				}
+			}
 			
 			$i = 0;
 			
 			foreach ($scores as $score) {
+				preg_match('/scores\.html\?frn\=(.*?)\&fg\=(.*)/s', $score[1], $URLbits);
 				$scoreT = explode("<br>", $score[2]);
-				
 				if ($scoreT[0] !== "--" && !is_numeric($scoreT[0]))	// This is here to handle special cases with schools using letter grades
-					$data['scores'][$slices[$i]] = $scoreT[1];		//  or grades not being posted
+					$data['scores'][$URLbits[2]] = $scoreT[1];		//  or grades not being posted
 				else
-					$data['scores'][$slices[$i]] = $scoreT[0];
+					$data['scores'][$URLbits[2]] = $scoreT[0];
 				
 				$i++;
 			}

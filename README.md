@@ -7,7 +7,7 @@ Requirements
 * PHP 5 >= 5.1.2.
 * PowerSchool >= 6.0.0; PowerSchool <= 6.2.1.6
 
-PowerSchool 7.x is **not** yet supported by PowerAPI-php.
+PowerSchool 7.x is **not** yet supported by PowerAPI-php, though support is planned.
 
 Usage
 -----
@@ -28,21 +28,32 @@ Provide the user's username and password. Returns an array containing the path t
 ### Parsing classes and grades ###
 	$ps->parseGrades($home['homeContents']);
 
-Provide the contents of the home page. Returns an array containing the class name and all of the grades. An example of the output is provided below (passed through print_r)
+Provide the contents of the home page. Returns an array containing the class details and its grades. An example of the output is provided below (passed through print_r)
 
 	Array
 	(
-		[0] => Array
-			(
-				[name] => Sample Class
-				[scores] => Array
-					(
-						[Q1] => 95
-						[Q2] => 97
-						[E1] => 89
-						[S1] => 95
-					)
-			)
+	    [0] => Array
+	        (
+	            [name] => Sample Class
+	            [teacher] => Array
+	                (
+	                    [name] => Teacher, Sample
+	                    [email] => steacher@school.edu
+	                )
+	
+	            [period] => 1(A-B)
+	            [absences] => 0
+	            [tardies] => 0
+	            [scores] => Array
+	                (
+	                    [Q1] => 95
+	                    [Q2] => 97
+	                    [E1] => 89
+	                    [S1] => 95
+	                    [Q3] => --
+	                )
+	
+	        )
 	)
 
 
