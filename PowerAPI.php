@@ -145,18 +145,12 @@ class PowerAPI {
 			unset($databits[$databitsCount-1]);
 			$databits = array_merge(Array(), $databits);
 			
-			$scores = Array();
-			foreach ($databits as $scorein) {
-				if ($scorein[1] !== "&nbsp;" && $scorein[1] !== "." && $scorein[1] !== "<br>") { // Make sure we aren't getting empty score boxes
-					preg_match('/<a href="(.*?)">(.*?)<\/a>/s', $scorein[1], $score);
-					$scores[] = $score;
-				}
-			}
+			preg_match_all('/<td><a href="scores.html\?(.*?)">(.*?)<\/a><\/td>/s', $class[2], $scores, PREG_SET_ORDER);
 			
 			$i = 0;
 			
 			foreach ($scores as $score) {
-				preg_match('/scores\.html\?frn\=(.*?)\&fg\=(.*)/s', $score[1], $URLbits);
+				preg_match('/frn\=(.*?)\&fg\=(.*)/s', $score[1], $URLbits);
 				$scoreT = explode("<br>", $score[2]);
 				if ($scoreT[0] !== "--" && !is_numeric($scoreT[0]))	// This is here to handle special cases with schools using letter grades
 					$data['scores'][$URLbits[2]] = $scoreT[1];		//  or grades not being posted
