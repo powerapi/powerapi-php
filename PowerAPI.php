@@ -1,10 +1,12 @@
 <?php
 class PowerAPI {
 	private $url;
+	private $version;
 	private $ua = "PowerAPI-php/1.0 (https://github.com/henriwatson/PowerAPI-php)";
 	
-	public function __construct($url) {
+	public function __construct($url, $version) {
 		$this->url = $url;
+		$this->version = $version;
 	}
 	
 	public function setUserAgent($ua) {
@@ -43,19 +45,43 @@ class PowerAPI {
 	public function auth($uid, $pw) {
 		$tokens = $this->getAuthTokens();
 		
-		$hmacPW = hash_hmac("md5", strtolower($pw), $tokens['contextData']); // Hash the user's password with the auth token
-		
-		$fields = array(
-					'pstoken' => urlencode($tokens['pstoken']),
-					'contextData' => urlencode($tokens['contextData']),
-					'returnUrl' => urlencode($this->url."guardian/home.html"),
-					'serviceName' => urlencode("PS Parent Portal"),
-					'serviceTicket' => "",
-					'pcasServerUrl' => urlencode("/"),
-					'credentialType' => urlencode("User Id and Password Credential"),
-					'account' => urlencode($uid),
-					'pw' => urlencode($hmacPW)
-				);
+		switch ($this->version) {
+			case 7:
+				$fields = array(
+							'pstoken' => urlencode($tokens['pstoken']),
+							'contextData' => urlencode($tokens['contextData']),
+							'dbpw' => urlencode(hash_hmac("md5", strtolower($pw), $tokens['contextData'])),
+							'translator_username' => urlencode(""),
+							'translator_password' => urlencode(""),
+							'translator_ldappassword' => urlencode(""),
+							'returnUrl' => urlencode(""),
+							'serviceName' => urlencode("PS Parent Portal"),
+							'serviceTicket' => "",
+							'pcasServerUrl' => urlencode("/"),
+							'credentialType' => urlencode("User Id and Password Credential"),
+							'request_locale' => urlencode("en_US"),
+							'account' => urlencode($uid),
+							'pw' => urlencode(hash_hmac("md5", str_replace("=", "", base64_encode(md5($pw, true))), $tokens['contextData'])),
+							'translatorpw' => urlencode("")
+						);
+				break;
+			case 6:
+				$fields = array(
+							'pstoken' => urlencode($tokens['pstoken']),
+							'contextData' => urlencode($tokens['contextData']),
+							'returnUrl' => urlencode($this->url."guardian/home.html"),
+							'serviceName' => urlencode("PS Parent Portal"),
+							'serviceTicket' => "",
+							'pcasServerUrl' => urlencode("/"),
+							'credentialType' => urlencode("User Id and Password Credential"),
+							'account' => urlencode($uid),
+							'pw' => urlencode(hash_hmac("md5", strtolower($pw), $tokens['contextData']))
+						);
+				break;
+			default:
+				throw new Exception('Invalid PowerSchool version.');
+				break;
+		}
 		
 		$fields_string = "";
 		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
@@ -70,6 +96,7 @@ class PowerAPI {
 		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $tmp_fname);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $tmp_fname);
 		curl_setopt($ch, CURLOPT_REFERER, $this->url."/public/");
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -84,12 +111,39 @@ class PowerAPI {
 			break;
 		}
 		
-		return Array(
-				"homeContents" => $result,
-				"cookiePath" => $tmp_fname
-			);
+		return new PowerAPIUser($this->url, $this->version, $this->ua, $tmp_fname);
+	}
+}
+
+class PowerAPIUser {
+	private $url, $version, $cookiePath, $ua;
+	
+	
+	public function __construct($url, $version, $ua, $cookiePath) {
+		$this->url = $url;
+		$this->version = $version;
+		$this->ua = $ua;
+		$this->cookiePath = $cookiePath;
 	}
 	
+	public function fetchTranscript() {
+		$ch = curl_init();
+		
+		curl_setopt($ch, CURLOPT_URL,$this->url."guardian/studentdata.xml?ac=download");
+		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookiePath);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookiePath);
+		curl_setopt($ch, CURLOPT_REFERER, $this->url."/public/");
+		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		$result = curl_exec($ch);
+		
+		curl_close($ch);
+		
+		return $result;
+	}
 	/* Scraping */
 	private function stripA($strip) {
 		if (substr($strip, 0, 2) == "<a") {
@@ -101,6 +155,9 @@ class PowerAPI {
 	}
 	
 	public function parseGrades($result) {
+		if ($this->version == 7) {
+			throw new Exception('Scraping is not supported in PS7.');
+		}
 		/* Parse different terms */
 		preg_match_all('/<tr align="center" bgcolor="#f6f6f6">(.*?)<\/tr>/s', $result, $slices);
 		preg_match_all('/<td rowspan="2" class="bold">(.*?)<\/td>/s', $slices[0][0], $slices);

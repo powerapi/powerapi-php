@@ -1,17 +1,15 @@
 <?php
 require_once('PowerAPI.php');
 
-$ps = new PowerAPI("http://psserver/");
+$ps = new PowerAPI("http://psserver/", 6);
 
-$u = (int) 0000;
-$p = (int) 000000;
+$u = "";
+$p = "";
 
 try {
-	$home = $ps->auth($u, $p, true);
+	$user = $ps->auth($u, $p);
 } catch (Exception $e) {
 	die('Something went wrong! Press the Back button on your browser and try again.<br />PA said: '.$e->getMessage());
 }
 
-$grades = $ps->parseGrades($home['homeContents']);
-
-print_r($grades);
+echo $user->fetchTranscript();

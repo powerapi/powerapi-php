@@ -5,9 +5,7 @@ Library for fetching information from PowerSchool SISes.
 Requirements
 ------------
 * PHP 5 >= 5.1.2.
-* PowerSchool >= 6.0.0; PowerSchool <= 6.2.2
-
-PowerSchool 7.x is **not** yet supported by PowerAPI-php, though support is planned.
+* PowerSchool >= 6.0.0; PowerSchool <= 7.1.2
 
 Usage
 -----
@@ -16,17 +14,22 @@ A basic demo is provided in `demo.php`
 ### Initializing the library ###
 	require_once('PowerAPI.php');			// Include the library
 	
-	$ps = new PowerAPI("http://psserver/");	// Specify the server's URL
+	$ps = new PowerAPI("http://psserver/", PSVERSION);	// Specify the server's URL and version
 
 **Note:** It's important that you end the server URL with a slash (/)
 
 ### Authenticating as a user ###
-	$ps->auth(USERNAME, PASSWORD);
+	$user = $ps->auth(USERNAME, PASSWORD);
 
-Provide the user's username and password. Returns an array containing the path to a file containing the user's cookies and the contents of the home page.
+Provide the user's username and password. Returns a PowerAPIUser object.
 
-### Parsing classes and grades ###
-	$ps->parseGrades($home['homeContents']);
+### Fetching the user's transcript ###
+	$user->fetchTranscript();
+	
+Returns an XML file representing the authenticated user's transcript.
+
+### Parsing classes and grades (DEPRECATED) ###
+	$user->parseGrades($home['homeContents']);
 
 Provide the contents of the home page. Returns an array containing the class details and its grades. An example of the output is provided below (passed through print_r)
 
