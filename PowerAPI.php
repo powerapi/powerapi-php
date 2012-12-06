@@ -5,7 +5,10 @@ class PowerAPI {
 	private $ua = "PowerAPI-php/1.0 (https://github.com/henriwatson/PowerAPI-php)";
 	
 	public function __construct($url, $version) {
-		$this->url = $url;
+		if (substr($url, -1) !== "/")
+			$this->url = $url."/";
+		else
+			$this->url = $url;
 		$this->version = $version;
 	}
 	
@@ -111,19 +114,20 @@ class PowerAPI {
 			break;
 		}
 		
-		return new PowerAPIUser($this->url, $this->version, $this->ua, $tmp_fname);
+		return new PowerAPIUser($this->url, $this->version, $this->ua, $tmp_fname, $result);
 	}
 }
 
 class PowerAPIUser {
-	private $url, $version, $cookiePath, $ua;
+	private $url, $version, $cookiePath, $ua, $homeContents;
 	
 	
-	public function __construct($url, $version, $ua, $cookiePath) {
+	public function __construct($url, $version, $ua, $cookiePath, $homeContents) {
 		$this->url = $url;
 		$this->version = $version;
 		$this->ua = $ua;
 		$this->cookiePath = $cookiePath;
+		$this->homeContents = $homeContents;
 	}
 	
 	public function fetchTranscript() {
@@ -154,10 +158,29 @@ class PowerAPIUser {
 		}
 	}
 	
-	public function parseGrades($result) {
+	public function getName() {
 		if ($this->version == 7) {
 			throw new Exception('Scraping is not supported in PS7.');
 		}
+		
+		preg_match('/<div id="userName">(.*?) <span>/s', $this->homeContents, $userName);
+		
+		$bits = explode(", ", $userName[1]);
+		
+		return Array(
+			'direct' => $userName[1],
+			'split' => $bits,
+			'firstname' => $bits[1],
+			'lastname' => $bits[0],
+			'regular' => $bits[1]." ".$bits[0]
+		);
+	}
+	
+	public function parseGrades() {
+		if ($this->version == 7) {
+			throw new Exception('Scraping is not supported in PS7.');
+		}
+		$result = $this->homeContents;
 		/* Parse different terms */
 		preg_match_all('/<tr align="center" bgcolor="#f6f6f6">(.*?)<\/tr>/s', $result, $slices);
 		preg_match_all('/<td rowspan="2" class="bold">(.*?)<\/td>/s', $slices[0][0], $slices);
@@ -202,7 +225,7 @@ class PowerAPIUser {
 			unset($databits[$databitsCount-1]);
 			$databits = array_merge(Array(), $databits);
 			
-			preg_match_all('/<td><a href="scores.html\?(.*?)">(.*?)<\/a><\/td>/s', $class[2], $scores, PREG_SET_ORDER);
+			preg_match_all('/<a href="scores.html\?(.*?)">(.*?)<\/a>/s', $class[2], $scores, PREG_SET_ORDER);
 			
 			$i = 0;
 			

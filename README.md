@@ -16,8 +16,6 @@ A basic demo is provided in `demo.php`
 	
 	$ps = new PowerAPI("http://psserver/", PSVERSION);	// Specify the server's URL and version
 
-**Note:** It's important that you end the server URL with a slash (/)
-
 ### Authenticating as a user ###
 	$user = $ps->auth(USERNAME, PASSWORD);
 
@@ -28,37 +26,61 @@ Provide the user's username and password. Returns a PowerAPIUser object.
 	
 Returns an XML file representing the authenticated user's transcript.
 
-### Parsing classes and grades (DEPRECATED) ###
-	$user->parseGrades($home['homeContents']);
+### Scraping ###
+Scraping **only** works for PowerSchool 6. If you're using PowerSchool 7, please use the XML transcript since it has quite a bit more information than is obtained through scraping and is much cleaner.
+If your school still runs PowerSchool 6, XML transcripts aren't really an option since they can be horribly broken. This is what scraping is for. 
 
-Provide the contents of the home page. Returns an array containing the class details and its grades. An example of the output is provided below (passed through print_r)
+#### Fetching the authenticated user's name ####
+	$user->getName();
+
+Returns an array containing the user's name broken into several formats.
+
 
 	Array
 	(
-	    [0] => Array
+	    [direct] => Watson, Henri
+	    [split] => Array
 	        (
-	            [name] => Sample Class
-	            [teacher] => Array
-	                (
-	                    [name] => Teacher, Sample
-	                    [email] => steacher@school.edu
-	                )
-	
-	            [period] => 1(A-B)
-	            [absences] => 0
-	            [tardies] => 0
-	            [scores] => Array
-	                (
-	                    [Q1] => 95
-	                    [Q2] => 97
-	                    [E1] => 89
-	                    [S1] => 95
-	                    [Q3] => --
-	                )
-	
+	            [0] => Watson
+	            [1] => Henri
 	        )
+	
+	    [firstname] => Henri
+	    [lastname] => Watson
+	    [regular] => Henri Watson
 	)
 
+
+#### Parsing classes and grades ####
+	$user->parseGrades();
+
+Returns an array containing the class details and its grades. An example of the output is provided below (passed through print_r)
+
+	Array
+	(
+		[0] => Array
+			(
+				[name] => Sample Class
+				[teacher] => Array
+					(
+						[name] => Teacher, Sample
+						[email] => steacher@school.edu
+					)
+	
+				[period] => 1(A-B)
+				[absences] => 0
+				[tardies] => 0
+				[scores] => Array
+					(
+						[Q1] => 95
+						[Q2] => 97
+						[E1] => 89
+						[S1] => 95
+						[Q3] => --
+					)
+	
+			)
+	)
 
 License
 -------
