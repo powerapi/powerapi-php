@@ -1,0 +1,22 @@
+{
+    "name": "henriwatson/powerapi-php",
+    "require": {
+    	"php": ">= 5.1.2"
+    },
+    "type": "library",
+    "description": "PHP API for PowerSchool",
+    "keywords": ["powerschool"],
+    "homepage": "https://github.com/henriwatson/PowerAPI-php",
+    "license": "MIT",
+    "authors": [
+            {
+                "name": "Henri Watson",
+                "email": "henri@henriwatson.com"
+            }
+    ],
+    "autoload": {
+        "psr-0": {
+            "henriwatson": "src"
+        }
+    }
+}
