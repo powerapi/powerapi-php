@@ -71,7 +71,7 @@ class Core {
 		curl_close($ch);
 		
 		if (!$html) {
-			throw new Exception('Unable to retrieve authentication tokens from PS server.');
+			throw new \Exception('Unable to retrieve authentication tokens from PS server.');
 			break;
 		}
 		
@@ -114,20 +114,10 @@ class Core {
 						);
 				break;
 			case 6:
-				$fields = array(
-							'pstoken' => urlencode($tokens['pstoken']),
-							'contextData' => urlencode($tokens['contextData']),
-							'returnUrl' => urlencode($this->url."guardian/home.html"),
-							'serviceName' => urlencode("PS Parent Portal"),
-							'serviceTicket' => "",
-							'pcasServerUrl' => urlencode("/"),
-							'credentialType' => urlencode("User Id and Password Credential"),
-							'account' => urlencode($uid),
-							'pw' => urlencode(hash_hmac("md5", strtolower($pw), $tokens['contextData']))
-						);
+				throw new \Exception('PowerSchool 6 is no longer supported. Please ask your school to upgrade.');
 				break;
 			default:
-				throw new Exception('Invalid PowerSchool version.');
+				throw new \Exception('Invalid PowerSchool version.');
 				break;
 		}
 		
@@ -155,7 +145,7 @@ class Core {
 		curl_close($ch);
 		
 		if (!strpos($result, "Grades and Attendance")) {			// This should show up instantly after login
-			throw new Exception('Unable to login to PS server.');	// So if it doesn't, something went wrong. (normally bad username/password)
+			throw new \Exception('Unable to login to PS server.');	// So if it doesn't, something went wrong. (normally bad username/password)
 			break;
 		}
 		

@@ -1,9 +1,10 @@
 <?php
-require_once 'vendor/autoload.php';
+require_once 'src/henriwatson/PowerAPI/Core.php';
+require_once 'src/henriwatson/PowerAPI/User.php';
 
 use henriwatson\PowerAPI as PowerAPI;
 
-$ps = new PowerAPI\Core("http://psserver/", 6);
+$ps = new PowerAPI\Core("http://psserver/", 7);
 
 try {
 	$user = $ps->auth("username", "password");

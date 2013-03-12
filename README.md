@@ -5,14 +5,13 @@ Library for fetching information from PowerSchool SISes.
 Requirements
 ------------
 * PHP 5 >= 5.1.2.
-* PowerSchool >= 6.0.0; PowerSchool <= 7.1.2
+* PowerSchool >= 7.0.0; PowerSchool <= 7.6.2
 
 Usage
 -----
-A basic demo is provided in `demo.php`
+You should use [Composer](http://getcomposer.org/) to handle including/downloading the library for you. A basic demo is provided in `demo.php`
 
 ### Initializing the library ###
-	require_once('PowerAPI.php');			// Include the library
 	
 	$ps = new PowerAPI("http://psserver/", PSVERSION);	// Specify the server's URL and version
 
@@ -26,65 +25,9 @@ Provide the user's username and password. Returns a PowerAPIUser object.
 	
 Returns an XML file representing the authenticated user's transcript.
 
-### Scraping ###
-Scraping **only** works for PowerSchool 6. If you're using PowerSchool 7, please use the XML transcript since it has quite a bit more information than is obtained through scraping and is much cleaner.
-If your school still runs PowerSchool 6, XML transcripts aren't really an option since they can be horribly broken. This is what scraping is for. 
-
-#### Fetching the authenticated user's name ####
-	$user->getName();
-
-Returns an array containing the user's name broken into several formats.
-
-
-	Array
-	(
-	    [direct] => Watson, Henri
-	    [split] => Array
-	        (
-	            [0] => Watson
-	            [1] => Henri
-	        )
-	
-	    [firstname] => Henri
-	    [lastname] => Watson
-	    [regular] => Henri Watson
-	)
-
-
-#### Parsing classes and grades ####
-	$user->parseGrades();
-
-Returns an array containing the class details and its grades. An example of the output is provided below (passed through print_r)
-
-	Array
-	(
-		[0] => Array
-			(
-				[name] => Sample Class
-				[teacher] => Array
-					(
-						[name] => Teacher, Sample
-						[email] => steacher@school.edu
-					)
-	
-				[period] => 1(A-B)
-				[absences] => 0
-				[tardies] => 0
-				[scores] => Array
-					(
-						[Q1] => 95
-						[Q2] => 97
-						[E1] => 89
-						[S1] => 95
-						[Q3] => --
-					)
-	
-			)
-	)
-
 License
 -------
-Copyright (c) 2012 Henri Watson.
+Copyright (c) 2013 Henri Watson.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
