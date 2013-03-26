@@ -33,19 +33,24 @@ namespace henriwatson\PowerAPI;
 class Core {
 	private $url;
 	private $version;
-	private $ua = "PowerAPI-php/2.1 (https://github.com/henriwatson/PowerAPI-php)";
+	private $ua = "PowerAPI-php/2.2 (https://github.com/henriwatson/PowerAPI-php)";
 	
 	/**
 	 * Create a PowerAPI object
 	 * @param string PowerSchool server URL
-	 * @param int server major version number
+	 * @param int server major version number, not required.
 	*/
-	public function __construct($url, $version) {
+	public function __construct($url, $version = 7) {
 		if (substr($url, -1) !== "/")
 			$this->url = $url."/";
 		else
 			$this->url = $url;
 		$this->version = $version;
+
+		if ($version == 6) {
+			throw new \Exception('PowerSchool 6 is no longer supported. Please ask your school to upgrade or revert to an older version.');
+				
+		}
 	}
 	
 	/**
@@ -57,12 +62,17 @@ class Core {
 	}
 	
 	/* Authentication */
-	private function getAuthTokens() {
+	private function getAuthData() {
+		$tmp_fname = tempnam("/tmp/","PSCOOKIE");
+		$data['tmp_fname'] = $tmp_fname;
+		
 		$ch = curl_init();
 		
 		curl_setopt($ch, CURLOPT_URL,$this->url);
 		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $tmp_fname);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $tmp_fname);
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
@@ -81,6 +91,12 @@ class Core {
 		preg_match('/<input type="hidden" name="contextData" value="(.*?)" \/>/s', $html, $contextData);
 		$data['contextData'] = $contextData[1];
 		
+		if (!strpos($html, "<input type=hidden name=ldappassword value=''>")) {
+			$data['ldap'] = false;
+		} else {
+			$data['ldap'] = true;
+		}
+		
 		return $data;
 	}
 	
@@ -91,64 +107,49 @@ class Core {
 	 * @return User
 	*/
 	public function auth($uid, $pw) {
-		$tokens = $this->getAuthTokens();
+		$authdata = $this->getAuthData();
 		
-		switch ($this->version) {
-			case 7:
-				$fields = array(
-							'pstoken' => urlencode($tokens['pstoken']),
-							'contextData' => urlencode($tokens['contextData']),
-							'dbpw' => urlencode(hash_hmac("md5", strtolower($pw), $tokens['contextData'])),
-							'translator_username' => urlencode(""),
-							'translator_password' => urlencode(""),
-							'translator_ldappassword' => urlencode(""),
-							'returnUrl' => urlencode(""),
-							'serviceName' => urlencode("PS Parent Portal"),
-							'serviceTicket' => "",
-							'pcasServerUrl' => urlencode("/"),
-							'credentialType' => urlencode("User Id and Password Credential"),
-							'request_locale' => urlencode("en_US"),
-							'account' => urlencode($uid),
-							'pw' => urlencode(hash_hmac("md5", str_replace("=", "", base64_encode(md5($pw, true))), $tokens['contextData'])),
-							'translatorpw' => urlencode("")
-						);
-				break;
-			case 6:
-				throw new \Exception('PowerSchool 6 is no longer supported. Please ask your school to upgrade.');
-				break;
-			default:
-				throw new \Exception('Invalid PowerSchool version.');
-				break;
-		}
-		
-		$fields_string = "";
-		foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-		rtrim($fields_string,'&');
+		$fields = array(
+					'pstoken' => $authdata['pstoken'],
+					'contextData' => $authdata['contextData'],
+					'dbpw' => hash_hmac("md5", strtolower($pw), $authdata['contextData']),
+					'serviceName' => "PS Parent Portal",
+					'pcasServerUrl' => "/",
+					'credentialType' => "User Id and Password Credential",
+					'account' => $uid,
+					'pw' => hash_hmac("md5", str_replace("=", "", base64_encode(md5($pw, true))), $authdata['contextData'])
+				);
+
+		if ($authdata['ldap'])
+			$fields['ldappassword'] = $pw;
 		
 		$ch = curl_init();
-		
-		$tmp_fname = tempnam("/tmp/","PSCOOKIE");
 		
 		curl_setopt($ch, CURLOPT_URL,$this->url."guardian/home.html");
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $tmp_fname);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $tmp_fname);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $authdata['tmp_fname']);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $authdata['tmp_fname']);
 		curl_setopt($ch, CURLOPT_REFERER, $this->url."/public/");
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,$fields_string);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,$fields);
 		
 		$result = curl_exec($ch);
 		
 		curl_close($ch);
 		
 		if (!strpos($result, "Grades and Attendance")) {			// This should show up instantly after login
-			throw new \Exception('Unable to login to PS server.');	// So if it doesn't, something went wrong. (normally bad username/password)
+			preg_match('/<div class="feedback-alert">(.*?)<\/div>/s', $result, $pserror); // Pearson tell us what's wrong! We should listen to that.
+			if (!isset($pserror[1])) { // Well, okay, sometimes they don't
+				throw new \Exception('Unable to login to PS server.');
+			} else {
+				throw new \Exception($pserror[1]);	// But if they do, we should pass that along
+			}
 			break;
 		}
 		
-		return new User($this->url, $this->version, $this->ua, $tmp_fname, $result);
+		return new User($this->url, $this->version, $this->ua, $authdata['tmp_fname'], $result);
 	}
 }

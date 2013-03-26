@@ -4,7 +4,7 @@ require_once 'src/henriwatson/PowerAPI/User.php';
 
 use henriwatson\PowerAPI as PowerAPI;
 
-$ps = new PowerAPI\Core("http://psserver/", 7);
+$ps = new PowerAPI\Core("https://psserver/");
 
 try {
 	$user = $ps->auth("username", "password");
