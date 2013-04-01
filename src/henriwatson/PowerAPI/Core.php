@@ -75,6 +75,7 @@ class Core {
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $tmp_fname);
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		
 		$html = curl_exec($ch);
 		
@@ -135,6 +136,7 @@ class Core {
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS,$fields);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		
 		$result = curl_exec($ch);
 		
