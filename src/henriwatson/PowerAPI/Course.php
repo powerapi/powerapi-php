@@ -42,9 +42,13 @@ class Course {
 		$this->_populateCourse();
 	}
 
+	/**
+	 * Parse an <A> tag
+	 * @return array tag's title and destination URL
+	*/
 	private function _splitA($strip) {
 		if (substr($strip, 0, 2) == '<a') {
-			preg_match('/<a (.*?)>(.*?)<\/a>/s', $strip, $stripped);
+			preg_match('/<a href="(.*?)">(.*?)<\/a>/s', $strip, $stripped);
 			return Array(
 				'title' => $stripped[2],
 				'url' => $stripped[1]
@@ -54,6 +58,10 @@ class Course {
 		}
 	}
 
+	/**
+	 * Populate the object with the course's information
+	 * @return void
+	*/
 	private function _populateCourse() {
 		preg_match('/<td align="left">(.*?)[&nbsp;|&bbsp;]<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $this->html, $classData);
 		$this->name = $classData[1];
@@ -90,10 +98,13 @@ class Course {
 		foreach ($scores as $score) {
 			preg_match('/frn\=(.*?)\&fg\=(.*)/s', $score[1], $URLbits);
 			$scoreT = explode('<br>', $score[2]);
-			if ($score[2] !== '--' && !is_numeric($scoreT[0]))	// This is here to handle special cases with schools using letter grades
+			if ($score[2] !== '--' && !is_numeric($scoreT[0])) {	// This is here to handle special cases with schools using letter grades
 				$this->scores[$URLbits[2]]['score'] = $scoreT[1];		//  or grades not being posted
-			else if ($score[2] !== '--')
+				$this->scores[$URLbits[2]]['url'] = 'scores.html?'.$score[1];
+			} else if ($score[2] !== '--') {
 				$this->scores[$URLbits[2]]['score'] = $scoreT[0];
+				$this->scores[$URLbits[2]]['url'] = 'scores.html?'.$score[1];
+			}
 		}
 	}
 

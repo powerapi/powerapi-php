@@ -62,7 +62,12 @@ class Core {
 	}
 	
 	/* Authentication */
-	private function getAuthData() {
+
+	/**
+	 * Fetch authentication parameters from the server
+	 * @return array authentication parameters
+	*/
+	private function _getAuthData() {
 		$tmp_fname = tempnam("/tmp/","PSCOOKIE");
 		$data['tmp_fname'] = $tmp_fname;
 		
@@ -108,7 +113,7 @@ class Core {
 	 * @return User
 	*/
 	public function auth($uid, $pw) {
-		$authdata = $this->getAuthData();
+		$authdata = $this->_getAuthData();
 		
 		$fields = array(
 					'pstoken' => $authdata['pstoken'],
