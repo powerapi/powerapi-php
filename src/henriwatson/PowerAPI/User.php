@@ -34,11 +34,8 @@ class User {
 	private $url, $version, $cookiePath, $ua, $homeContents, $courses;
 	
 	
-	public function __construct($url, $version, $ua, $cookiePath, $homeContents) {
-		$this->url = $url;
-		$this->version = $version;
-		$this->ua = $ua;
-		$this->cookiePath = $cookiePath;
+	public function __construct(&$core, $homeContents) {
+		$this->core = &$core;
 		$this->homeContents = $homeContents;
 
 		$this->courses = $this->_createCourses();
@@ -49,25 +46,11 @@ class User {
 	 * @return string PESC HighSchoolTranscript
 	*/
 	public function fetchTranscript() {
-		$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,$this->url.'guardian/studentdata.xml?ac=download');
-		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookiePath);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookiePath);
-		curl_setopt($ch, CURLOPT_REFERER, $this->url.'/public/');
-		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
-		$result = curl_exec($ch);
-		
-		curl_close($ch);
+		$result = $this->core->_request('guardian/studentdata.xml?ac=download');
 		
 		return $result;
 	}
 
-	/* Scraping */
 	/**
 	 * Parse the authenticated user's grades from the retrieved home page
 	 * @return array
@@ -91,7 +74,7 @@ class User {
 		preg_match_all('/<tr class="center" bgcolor="(.*?)">(.*?)<\/tr>/s', $result, $classes, PREG_SET_ORDER);
 
 		foreach ($classes as $class) {
-			$classesA[] = new Course($this->url, $this->version, $class[2], $terms);
+			$classesA[] = new Course($this->core, $class[2], $terms);
 		}
 		
 		return $classesA;

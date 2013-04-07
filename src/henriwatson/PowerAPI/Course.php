@@ -31,12 +31,11 @@ namespace henriwatson\PowerAPI;
 
 /** Handles post-authentication functions. (fetching transcripts, parsing data, etc.) */
 class Course {
-	private $url, $version, $html; // Passed in variables
+	private $core, $html; // Passed in variables
 	private $name, $teacher, $scores, $period, $attendance; // Scraped variables
 
-	public function __construct($url, $version, $html) {
-		$this->url = $url;
-		$this->version = $version;
+	public function __construct(&$core, $html) {
+		$this->core = &$core;
 		$this->html = $html;
 
 		$this->_populateCourse();
@@ -109,10 +108,60 @@ class Course {
 	}
 
 	/**
+	 * Fetch the information for a term and store it
+	 * @return void
+	*/
+	private function _fetchTerm($term) {
+		$result = $this->core->_request('guardian/'.$this->scores[$term]['url']);
+
+		preg_match('/<table border="0" cellpadding="0" cellspacing="0" align="center" width="99%">(.*?)<\/table>/s', $result, $assignments);
+		preg_match_all('/<tr bgcolor="(.*?)">(.*?)<\/tr>/s', $assignments[1], $assignments, PREG_SET_ORDER);
+		foreach ($assignments as $assignmentHTML) {
+			preg_match_all('/<td(.*?)?>(.*?)<\/td>/s', $assignmentHTML[2], $assignmentData, PREG_SET_ORDER);
+			$assignment['due'] = $assignmentData[0][2];
+			$assignment['category'] = $assignmentData[1][2];
+			$assignment['assignment'] = strip_tags($assignmentData[2][2]);
+
+
+			if ($assignmentData[3][2] == "")
+				$assignment['codes']['collected'] = false;
+			else
+				$assignment['codes']['collected'] = true;
+			if ($assignmentData[4][2] == "")
+				$assignment['codes']['late'] = false;
+			else
+				$assignment['codes']['late'] = true;
+			if ($assignmentData[5][2] == "")
+				$assignment['codes']['missing'] = false;
+			else
+				$assignment['codes']['missing'] = true;
+			if ($assignmentData[6][2] == "")
+				$assignment['codes']['exempt'] = false;
+			else
+				$assignment['codes']['exempt'] = true;
+			if ($assignmentData[7][2] == "")
+				$assignment['codes']['excluded'] = false;
+			else
+				$assignment['codes']['excluded'] = true;
+
+			$assignment['score'] = strip_tags($assignmentData[8][2]);
+			$assignment['percent'] = $assignmentData[9][2];
+			$assignment['grade'] = $assignmentData[10][2];
+
+			$data[] = $assignment;
+		}
+		$this->scores[$term]['assignments'] = $data;
+
+		preg_match_all('/<div class="comment">.*?<pre>(.*?)<\/pre>.*?<\/div>/s', $result, $comments, PREG_SET_ORDER);
+		$this->comments[$term]['teacher'] = $comments[0][1];
+		$this->comments[$term]['section'] = $comments[1][1];
+	}
+
+	/**
 	 * Return the course's name
 	 * @return string course name
 	*/
-	public function fetchName() {
+	public function getName() {
 		return $this->name;
 	}
 
@@ -120,10 +169,46 @@ class Course {
 	 * Return the course's scores in an array
 	 * @return array course's scores
 	*/
-	public function fetchScores() {
+	public function getScores() {
 		foreach ($this->scores as $term => $data) {
 			$return[$term] = $data['score'];
 		}
 		return $return;
+	}
+
+	/**
+	 * Return the term's comments in an array
+	 * Returns false if the term doesn't exist.
+	 * @param string term name
+	 * @return array term's comments
+	*/
+	public function getComments($term) {
+		$term = strtoupper($term); // normalise term name
+		if (!isset($this->scores[$term]))
+			return false;
+
+		if (!isset($this->comments[$term])) {
+			$this->_fetchTerm($term);
+		}
+
+		return $this->comments[$term];
+	}
+
+	/**
+	 * Return the term's assignments in an array
+	 * Returns false if the term doesn't exist.
+	 * @param string term name
+	 * @return array term's assignments
+	*/
+	public function getAssignments($term) {
+		$term = strtoupper($term); // normalise term name
+		if (!isset($this->scores[$term]))
+			return false;
+
+		if (!isset($this->scores[$term]['assignments'])) {
+			$this->_fetchTerm($term);
+		}
+
+		return $this->scores[$term]['assignments'];
 	}
 }

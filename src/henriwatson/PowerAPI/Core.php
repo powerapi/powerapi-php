@@ -31,8 +31,7 @@ namespace henriwatson\PowerAPI;
 
 /** Handles the initial token fetch and login */
 class Core {
-	private $url;
-	private $version;
+	private $url, $version, $tmp_fname;
 	private $ua = "PowerAPI-php/2.2 (https://github.com/henriwatson/PowerAPI-php)";
 	
 	/**
@@ -48,9 +47,10 @@ class Core {
 		$this->version = $version;
 
 		if ($version == 6) {
-			throw new \Exception('PowerSchool 6 is no longer supported. Please ask your school to upgrade or revert to an older version.');
-				
+			throw new \Exception('PowerSchool 6 is no longer supported. Please ask your school to upgrade or revert to an older version.');	
 		}
+
+		$this->tmp_fname = tempnam("/tmp/","PSCOOKIE");
 	}
 	
 	/**
@@ -60,6 +60,27 @@ class Core {
 	public function setUserAgent($ua) {
 		$this->ua = $ua;
 	}
+
+	public function _request($path, $post = false) {
+		$ch = curl_init();
+		
+		curl_setopt($ch, CURLOPT_URL,$this->url.$path);
+		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->tmp_fname);
+		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->tmp_fname);
+		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		if ($post)
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+		
+		$html = curl_exec($ch);
+		
+		curl_close($ch);
+
+		return $html;
+	}
 	
 	/* Authentication */
 
@@ -68,23 +89,7 @@ class Core {
 	 * @return array authentication parameters
 	*/
 	private function _getAuthData() {
-		$tmp_fname = tempnam("/tmp/","PSCOOKIE");
-		$data['tmp_fname'] = $tmp_fname;
-		
-		$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,$this->url);
-		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $tmp_fname);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $tmp_fname);
-		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		
-		$html = curl_exec($ch);
-		
-		curl_close($ch);
+		$html = $this->_request('');
 		
 		if (!$html) {
 			throw new \Exception('Unable to retrieve authentication tokens from PS server.');
@@ -129,23 +134,7 @@ class Core {
 		if ($authdata['ldap'])
 			$fields['ldappassword'] = $pw;
 		
-		$ch = curl_init();
-		
-		curl_setopt($ch, CURLOPT_URL,$this->url.'guardian/home.html');
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_COOKIEJAR, $authdata['tmp_fname']);
-		curl_setopt($ch, CURLOPT_COOKIEFILE, $authdata['tmp_fname']);
-		curl_setopt($ch, CURLOPT_REFERER, $this->url.'/public/');
-		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,$fields);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		
-		$result = curl_exec($ch);
-		
-		curl_close($ch);
+		$result = $this->_request('guardian/home.html', $fields);
 		
 		if (!strpos($result, 'Grades and Attendance')) {			// This should show up instantly after login
 			preg_match('/<div class="feedback-alert">(.*?)<\/div>/s', $result, $pserror); // Pearson tell us what's wrong! We should listen to that.
@@ -157,6 +146,6 @@ class Core {
 			break;
 		}
 		
-		return new User($this->url, $this->version, $this->ua, $authdata['tmp_fname'], $result);
+		return new User($this, $result);
 	}
 }
