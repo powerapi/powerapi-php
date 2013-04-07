@@ -23,7 +23,7 @@
  *
  * @author		Henri Watson
  * @package		User
- * @version		2.1
+ * @version		2.2
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 
@@ -31,7 +31,7 @@ namespace henriwatson\PowerAPI;
 
 /** Handles post-authentication functions. (fetching transcripts, parsing data, etc.) */
 class User {
-	private $url, $version, $cookiePath, $ua, $homeContents;
+	private $url, $version, $cookiePath, $ua, $homeContents, $courses;
 	
 	
 	public function __construct($url, $version, $ua, $cookiePath, $homeContents) {
@@ -40,6 +40,8 @@ class User {
 		$this->ua = $ua;
 		$this->cookiePath = $cookiePath;
 		$this->homeContents = $homeContents;
+
+		$this->courses = $this->_createCourses();
 	}
 	
 	/**
@@ -49,12 +51,12 @@ class User {
 	public function fetchTranscript() {
 		$ch = curl_init();
 		
-		curl_setopt($ch, CURLOPT_URL,$this->url."guardian/studentdata.xml?ac=download");
+		curl_setopt($ch, CURLOPT_URL,$this->url.'guardian/studentdata.xml?ac=download');
 		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookiePath);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookiePath);
-		curl_setopt($ch, CURLOPT_REFERER, $this->url."/public/");
+		curl_setopt($ch, CURLOPT_REFERER, $this->url.'/public/');
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		
@@ -63,5 +65,63 @@ class User {
 		curl_close($ch);
 		
 		return $result;
+	}
+
+	/* Scraping */
+	/**
+	 * Parse the authenticated user's grades from the retrieved home page
+	 * @return array
+	*/
+	private function _createCourses() {
+		$result = $this->homeContents;
+
+		/* Parse different terms */
+		preg_match_all('/<tr class="center th2">(.*?)<\/tr>/s', $result, $terms);
+		preg_match_all('/<th rowspan="2">(.*?)<\/th>/s', $terms[0][0], $terms);
+		
+		$terms = $terms[1];
+		$termsCount = count($terms);
+		unset($terms[0]); // Remove Exp
+		unset($terms[1]); // Remove Course
+		unset($terms[$termsCount-2]); // Remove Abscences
+		unset($terms[$termsCount-1]); // Remove Tardies
+		$terms = array_merge(array(), $terms); // Reorder
+
+		/* Parse classes */
+		preg_match_all('/<tr class="center" bgcolor="(.*?)">(.*?)<\/tr>/s', $result, $classes, PREG_SET_ORDER);
+
+		foreach ($classes as $class) {
+			$classesA[] = new Course($this->url, $this->version, $class[2], $terms);
+		}
+		
+		return $classesA;
+	}
+
+	/**
+	 * Parse the school's name from the retrieved home page
+	 * @return string school's name
+	*/
+	public function getSchoolName() {
+		preg_match('/<div id="print-school">(.*?)<br>/s', $this->homeContents, $schoolName);
+		
+		return trim($schoolName[1]);
+	}
+	
+	/**
+	 * Parse the authenticated user's name from the retrieved home page
+	 * @return string user's name
+	*/
+	public function getUserName() {
+		preg_match('/<li id="userName" .*?<span>(.*?)<\/span>/s', $this->homeContents, $userName);
+		
+		return trim($userName[1]);
+	}
+
+	/**
+	 * Return an array of courses
+	 * @return array courses
+	*/
+	public function getCourses() {
+		return $this->courses;
 	}
 }

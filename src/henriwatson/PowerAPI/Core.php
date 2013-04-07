@@ -23,7 +23,7 @@
  *
  * @author		Henri Watson
  * @package		Core
- * @version		2.1
+ * @version		2.2
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 
@@ -126,13 +126,13 @@ class Core {
 		
 		$ch = curl_init();
 		
-		curl_setopt($ch, CURLOPT_URL,$this->url."guardian/home.html");
+		curl_setopt($ch, CURLOPT_URL,$this->url.'guardian/home.html');
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, $this->ua);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_COOKIEJAR, $authdata['tmp_fname']);
 		curl_setopt($ch, CURLOPT_COOKIEFILE, $authdata['tmp_fname']);
-		curl_setopt($ch, CURLOPT_REFERER, $this->url."/public/");
+		curl_setopt($ch, CURLOPT_REFERER, $this->url.'/public/');
 		curl_setopt($ch, CURLOPT_AUTOREFERER, true);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS,$fields);
@@ -142,7 +142,7 @@ class Core {
 		
 		curl_close($ch);
 		
-		if (!strpos($result, "Grades and Attendance")) {			// This should show up instantly after login
+		if (!strpos($result, 'Grades and Attendance')) {			// This should show up instantly after login
 			preg_match('/<div class="feedback-alert">(.*?)<\/div>/s', $result, $pserror); // Pearson tell us what's wrong! We should listen to that.
 			if (!isset($pserror[1])) { // Well, okay, sometimes they don't
 				throw new \Exception('Unable to login to PS server.');
