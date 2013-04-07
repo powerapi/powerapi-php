@@ -62,7 +62,7 @@ class Course {
 	 * @return void
 	*/
 	private function _populateCourse() {
-		preg_match('/<td align="left">(.*?)[&nbsp;|&bbsp;]<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $this->html, $classData);
+		preg_match('/<td align="left">(.*?)(&nbsp;|&bbsp;)<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $this->html, $classData);
 		$this->name = $classData[1];
 		$this->teacher = Array(
 			'name' => $classData[4],
