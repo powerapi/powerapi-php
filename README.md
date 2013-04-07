@@ -11,20 +11,6 @@ Usage
 -----
 You should use [Composer](http://getcomposer.org/) to handle including/downloading the library for you. A basic demo is provided in `demo.php`
 
-### Initializing the library ###
-	
-	$ps = new PowerAPI("http://psserver/", PSVERSION);	// Specify the server's URL and version
-
-### Authenticating as a user ###
-	$user = $ps->auth(USERNAME, PASSWORD);
-
-Provide the user's username and password. Returns a PowerAPIUser object.
-
-### Fetching the user's transcript ###
-	$user->fetchTranscript();
-	
-Returns an XML file representing the authenticated user's transcript.
-
 License
 -------
 Copyright (c) 2013 Henri Watson.

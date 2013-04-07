@@ -23,7 +23,7 @@
  *
  * @author		Henri Watson
  * @package		User
- * @version		2.2
+ * @version		2.3
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 

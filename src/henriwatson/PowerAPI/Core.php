@@ -23,7 +23,7 @@
  *
  * @author		Henri Watson
  * @package		Core
- * @version		2.2
+ * @version		2.3
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 
@@ -32,7 +32,7 @@ namespace henriwatson\PowerAPI;
 /** Handles the initial token fetch and login */
 class Core {
 	private $url, $version, $tmp_fname;
-	private $ua = "PowerAPI-php/2.2 (https://github.com/henriwatson/PowerAPI-php)";
+	private $ua = "PowerAPI-php/2.3 (https://github.com/henriwatson/PowerAPI-php)";
 	
 	/**
 	 * Create a PowerAPI object
