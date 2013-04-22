@@ -65,8 +65,8 @@ class Course {
 		preg_match('/<td align="left">(.*?)(&nbsp;|&bbsp;)<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $this->html, $classData);
 		$this->name = $classData[1];
 		$this->teacher = Array(
-			'name' => $classData[4],
-			'email' => $classData[3]
+			'name' => $classData[5],
+			'email' => $classData[4]
 		);
 
 		preg_match_all('/<td>(.*?)<\/td>/s', $this->html, $databits, PREG_SET_ORDER);
