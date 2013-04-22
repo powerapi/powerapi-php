@@ -74,7 +74,8 @@ class User {
 		preg_match_all('/<tr class="center" bgcolor="(.*?)">(.*?)<\/tr>/s', $result, $classes, PREG_SET_ORDER);
 
 		foreach ($classes as $class) {
-			$classesA[] = new Course($this->core, $class[2], $terms);
+			if (preg_match('/<td align="left">(.*?)(&nbsp;|&bbsp;)<br>(.*?)<a href="mailto:(.*?)">(.*?)<\/a><\/td>/s', $class[2]))
+				$classesA[] = new Course($this->core, $class[2], $terms);
 		}
 		
 		return $classesA;
