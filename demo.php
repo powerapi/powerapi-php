@@ -1,9 +1,7 @@
 <?php
-require_once 'src/henriwatson/PowerAPI/Core.php';
-require_once 'src/henriwatson/PowerAPI/User.php';
-require_once 'src/henriwatson/PowerAPI/Course.php';
-
-use henriwatson\PowerAPI as PowerAPI;
+require_once 'src/PowerAPI/Core.php';
+require_once 'src/PowerAPI/User.php';
+require_once 'src/PowerAPI/Course.php';
 
 $ps = new PowerAPI\Core("https://psserver/");
 

@@ -27,7 +27,7 @@
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 
-namespace henriwatson\PowerAPI;
+namespace PowerAPI;
 
 /** Handles the initial token fetch and login */
 class Core {

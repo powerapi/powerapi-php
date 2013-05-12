@@ -27,7 +27,7 @@
  * @license		http://opensource.org/licenses/MIT	The MIT License
  */
 
-namespace henriwatson\PowerAPI;
+namespace PowerAPI;
 
 /** Handles post-authentication functions. (fetching transcripts, parsing data, etc.) */
 class Course {
