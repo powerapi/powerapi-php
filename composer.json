@@ -1,7 +1,8 @@
 {
     "name": "powerapi/powerapi-php",
     "require": {
-        "php": ">= 5.1.2"
+        "php": ">= 5.1.2",
+        "zendframework/zend-soap": "~2.3.1"
     },
     "type": "library",
     "description": "PHP API for PowerSchool",
