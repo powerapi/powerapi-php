@@ -1,8 +1,8 @@
 <?php
 
-namespace PowerAPI;
+namespace PowerAPI\Data;
 
-/** Class used to hold section details
+/** Class used to hold section details.
  * @property array $assignments contains the section's assignments
  * @property array $finalGrades final grades, grouped by term abbreviation
  * @property string $name section's name

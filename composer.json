@@ -1,11 +1,7 @@
 {
     "name": "powerapi/powerapi-php",
-    "require": {
-        "php": ">= 5.1.2",
-        "zendframework/zend-soap": "~2.3.1"
-    },
-    "type": "library",
     "description": "PHP API for PowerSchool",
+    "type": "library",
     "keywords": ["powerschool"],
     "homepage": "https://github.com/powerapi/PowerAPI-php",
     "license": "MIT",
@@ -15,9 +11,19 @@
                 "email": "henri@henriwatson.com"
             }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ],
+    "require": {
+        "php": ">= 5.1.2",
+        "zendframework/zend-soap": "~2.3.1"
+    },
     "autoload": {
         "psr-4": {
-            "PowerAPI\\": "src/"
+            "PowerAPI\\": "lib/PowerAPI"
         }
     }
 }

@@ -4,22 +4,22 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "faa25b8415d0f4bdd0a058ab142c8241",
+    "hash": "b6fa12caafc1650d913df1b244e81483",
     "packages": [
         {
             "name": "zendframework/zend-code",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Code",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendCode.git",
-                "reference": "3e7cc92f946c23fb28959457fa0608c5eba29ed8"
+                "reference": "78ea301533dd05f1c1759e8928d119804900446b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendCode/zipball/3e7cc92f946c23fb28959457fa0608c5eba29ed8",
-                "reference": "3e7cc92f946c23fb28959457fa0608c5eba29ed8",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-code-78ea301533dd05f1c1759e8928d119804900446b-zip-f2a7ed.zip",
+                "reference": "2.3.3",
+                "shasum": "571f4f40563a8f05ed9fbf58e1d8d24deefd0674"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -45,31 +45,34 @@
                     "Zend\\Code\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "provides facilities to generate arbitrary code using an object oriented interface",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "code",
                 "zf2"
             ],
-            "time": "2014-04-15 15:28:49"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendCode/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-escaper",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Escaper",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendEscaper.git",
-                "reference": "dddee2104337bbf3522f9ef591c361a40aabf7cc"
+                "reference": "c24949840766a544489bfc303714e1f332341010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEscaper/zipball/dddee2104337bbf3522f9ef591c361a40aabf7cc",
-                "reference": "dddee2104337bbf3522f9ef591c361a40aabf7cc",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-escaper-c24949840766a544489bfc303714e1f332341010-zip-c66566.zip",
+                "reference": "2.3.3",
+                "shasum": "2a5ca9aa9fa325d315479488d1cc98ff0539443b"
             },
             "require": {
                 "php": ">=5.3.23"
@@ -86,30 +89,34 @@
                     "Zend\\Escaper\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "escaper",
                 "zf2"
             ],
-            "time": "2014-04-15 15:29:16"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendEscaper/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-eventmanager",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/EventManager",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendEventManager.git",
-                "reference": "957faa0580c40ef6bf6cf3e87a36d594042fe133"
+                "reference": "4110fe64b10616b9bb71429a206d8e9e6d99e3ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/957faa0580c40ef6bf6cf3e87a36d594042fe133",
-                "reference": "957faa0580c40ef6bf6cf3e87a36d594042fe133",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-eventmanager-4110fe64b10616b9bb71429a206d8e9e6d99e3ba-zip-f2e466.zip",
+                "reference": "2.3.3",
+                "shasum": "f0005036e196d31bcd41f5461653d4b63fc14132"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -127,30 +134,34 @@
                     "Zend\\EventManager\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "eventmanager",
                 "zf2"
             ],
-            "time": "2014-04-15 14:47:18"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendEventManager/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-server",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Server",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendServer.git",
-                "reference": "b491a401b1710785b5dbf69e77ee2f13764fb0ff"
+                "reference": "2c074755ddf63598c703482ca21c721d63d990b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendServer/zipball/b491a401b1710785b5dbf69e77ee2f13764fb0ff",
-                "reference": "b491a401b1710785b5dbf69e77ee2f13764fb0ff",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-server-2c074755ddf63598c703482ca21c721d63d990b0-zip-d8f0ad.zip",
+                "reference": "2.3.3",
+                "shasum": "3d4718f65cec08530a16c2174ba370b80ea49d04"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -169,30 +180,34 @@
                     "Zend\\Server\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "server",
                 "zf2"
             ],
-            "time": "2014-04-15 14:47:18"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendServer/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-soap",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Soap",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendSoap.git",
-                "reference": "29b7dfe2b2d1fcf219557ff8821506a55510a53d"
+                "reference": "091a4e72d3d3e1c2e8a5885d3a4e10c5d394678b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendSoap/zipball/29b7dfe2b2d1fcf219557ff8821506a55510a53d",
-                "reference": "29b7dfe2b2d1fcf219557ff8821506a55510a53d",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-soap-091a4e72d3d3e1c2e8a5885d3a4e10c5d394678b-zip-0018ef.zip",
+                "reference": "2.3.3",
+                "shasum": "600c5b0dc7f8e862f9d54fa6abf5cb2d908f5e9b"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -218,30 +233,34 @@
                     "Zend\\Soap\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "soap",
                 "zf2"
             ],
-            "time": "2014-04-15 14:47:18"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendSoap/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendStdlib.git",
-                "reference": "c1f4830018b5d4f034d32fa01a9e17ea176f56f6"
+                "reference": "fa33e6647f830d0d2a1cb451efcdfe1bb9a66c33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/c1f4830018b5d4f034d32fa01a9e17ea176f56f6",
-                "reference": "c1f4830018b5d4f034d32fa01a9e17ea176f56f6",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-stdlib-fa33e6647f830d0d2a1cb451efcdfe1bb9a66c33-zip-3307db.zip",
+                "reference": "2.3.3",
+                "shasum": "9ba6087a66196914c6ff6885f78eec7bc7352517"
             },
             "require": {
                 "php": ">=5.3.23"
@@ -268,30 +287,34 @@
                     "Zend\\Stdlib\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": " ",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "stdlib",
                 "zf2"
             ],
-            "time": "2014-04-15 15:28:48"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendStdlib/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-uri",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Uri",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendUri.git",
-                "reference": "cf120804a7ef1b906979b110c6f34c8592a7c36b"
+                "reference": "2a62a92888d7cbae1177fa5f58b0bfcf717aea53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendUri/zipball/cf120804a7ef1b906979b110c6f34c8592a7c36b",
-                "reference": "cf120804a7ef1b906979b110c6f34c8592a7c36b",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-uri-2a62a92888d7cbae1177fa5f58b0bfcf717aea53-zip-ef33a3.zip",
+                "reference": "2.3.3",
+                "shasum": "bacb5f752fa65407e5e60d66b43d086f2872c7a3"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -310,31 +333,34 @@
                     "Zend\\Uri\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "a component that aids in manipulating and validating » Uniform Resource Identifiers (URIs)",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "uri",
                 "zf2"
             ],
-            "time": "2014-04-15 14:47:18"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendUri/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         },
         {
             "name": "zendframework/zend-validator",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "target-dir": "Zend/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendValidator.git",
-                "reference": "ac9848e54c6c75de81ee7a82c3187cd25a898990"
+                "reference": "2881dfaff8452d8cbdaa8ad8a9faccce9843fc6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendValidator/zipball/ac9848e54c6c75de81ee7a82c3187cd25a898990",
-                "reference": "ac9848e54c6c75de81ee7a82c3187cd25a898990",
-                "shasum": ""
+                "url": "https://packages.zendframework.com/composer/zendframework-zend-validator-2881dfaff8452d8cbdaa8ad8a9faccce9843fc6a-zip-02f502.zip",
+                "reference": "2.3.3",
+                "shasum": "5f5d643ff6beeea896c9e7738c8be09a8f9fdfbf"
             },
             "require": {
                 "php": ">=5.3.23",
@@ -371,16 +397,19 @@
                     "Zend\\Validator\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "provides a set of commonly needed validators",
+            "homepage": "https://github.com/zendframework/zf2",
             "keywords": [
                 "validator",
                 "zf2"
             ],
-            "time": "2014-04-15 15:28:42"
+            "support": {
+                "source": "https://github.com/zendframework/Component_ZendValidator/tree/release-2.3.3"
+            },
+            "time": "2014-09-16 22:58:11"
         }
     ],
     "packages-dev": [

@@ -21,7 +21,7 @@ class Parser
                 $assignments[$assignment->sectionid] = Array();
             }
 
-            $assignments[$assignment->sectionid][] = new Assignment(Array(
+            $assignments[$assignment->sectionid][] = new Data\Assignment(Array(
               'assignment' => $assignment,
               'category' => $assignmentCategories[$assignment->categoryId],
               'score' => Parser::requireDefined($assignmentScores[$assignment->id])
@@ -114,7 +114,7 @@ class Parser
             continue;
         }
 
-        $sections[] = new Section(Array(
+        $sections[] = new Data\Section(Array(
           'assignments' => Parser::requireDefined($assignments[$section->id]),
           'finalGrades' => Parser::requireDefined($finalGrades[$section->id]),
           'reportingTerms' => $reportingTerms,

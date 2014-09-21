@@ -1,20 +1,13 @@
 <?php
 
-namespace PowerAPI;
+namespace PowerAPI\Data;
 
-/** Handles post-authentication functions. (fetching transcripts, parsing data, etc.) */
-class Student
+/** Handles fetching the transcript and holding onto its data.
+ * @property array $sections contains the student's sections
+ * @property arrray $information contains the student's information
+ */
+class Student extends BaseObject
 {
-    /** array containing the student's sections
-     * @var array
-     */
-    public $sections;
-
-    /** array containing the student's information
-     * @var array
-     */
-    public $information;
-
     /** URL for the PowerSchool server
      * @var string
      */
@@ -36,6 +29,9 @@ class Student
     {
         $this->soap_url = $soap_url;
         $this->soap_session = $soap_session;
+
+        $this->details['information'] = Array();
+        $this->details['sections'] = Array();
 
         if ($populate) {
             $this->populate();
@@ -100,21 +96,21 @@ class Student
     {
         $studentData = $transcript->studentDataVOs;
 
-        $this->information = $studentData->student;
+        $this->details['information'] = $studentData->student;
 
-        $assignmentCategories = Parser::assignmentCategories($studentData->assignmentCategories);
-        $assignmentScores = Parser::assignmentScores($studentData->assignmentScores);
-        $finalGrades = Parser::finalGrades($studentData->finalGrades);
-        $reportingTerms = Parser::reportingTerms($studentData->reportingTerms);
-        $teachers = Parser::teachers($studentData->teachers);
+        $assignmentCategories = \PowerAPI\Parser::assignmentCategories($studentData->assignmentCategories);
+        $assignmentScores = \PowerAPI\Parser::assignmentScores($studentData->assignmentScores);
+        $finalGrades = \PowerAPI\Parser::finalGrades($studentData->finalGrades);
+        $reportingTerms = \PowerAPI\Parser::reportingTerms($studentData->reportingTerms);
+        $teachers = \PowerAPI\Parser::teachers($studentData->teachers);
 
-        $assignments = Parser::assignments(
+        $assignments = \PowerAPI\Parser::assignments(
             $studentData->assignments,
             $assignmentCategories,
             $assignmentScores
         );
 
-        $this->sections = Parser::sections(
+        $this->details['sections'] = \PowerAPI\Parser::sections(
             $studentData->sections,
             $assignments,
             $finalGrades,

@@ -1,6 +1,6 @@
 <?php
 
-namespace PowerAPI;
+namespace PowerAPI\Data;
 
 /** Handles the basic overrides that data holding classes make use of. */
 class BaseObject

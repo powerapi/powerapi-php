@@ -1,14 +1,8 @@
 <?php
 
-require_once 'PowerAPI/BaseObject.php';
-require_once 'PowerAPI/Exception.php';
-require_once 'PowerAPI/Parser.php';
+namespace PowerAPI;
 
-require_once 'PowerAPI/Assignment.php';
-require_once 'PowerAPI/Section.php';
-require_once 'PowerAPI/Student.php';
-
-/** Handles the initial token fetch and login */
+/** Handles logging in with PowerSchool and initialising PowerAPI\Data\Student. */
 class PowerAPI
 {
     /**
@@ -17,7 +11,7 @@ class PowerAPI
      * @param string $username student's username
      * @param string $password student's password
      * @param boolean $fetch_transcript fetch transcript after successful login?
-     * @return PowerAPI\User
+     * @return PowerAPI\Student
      */
     static public function authenticate($url, $username, $password, $fetch_transcript = true)
     {
@@ -28,7 +22,7 @@ class PowerAPI
             $url = $url;
         }
 
-        $client = new Zend\Soap\Client();
+        $client = new \Zend\Soap\Client();
         $client->setOptions(Array(
             'uri' => 'http://publicportal.rest.powerschool.pearson.com/xsd',
             'location' => $url.'pearson-rest/services/PublicPortalServiceJSON',
@@ -48,11 +42,11 @@ class PowerAPI
 
         // userSessionVO is unset if something went wrong during auth.
         if ($login->userSessionVO === null) {
-            throw(new PowerAPI\Exception($login->messageVOs->description));
+            throw(new Exceptions\Authentication($login->messageVOs->description));
         }
 
         $session = $login->userSessionVO;
 
-        return new PowerAPI\Student($url, $session, $fetch_transcript);
+        return new Data\Student($url, $session, $fetch_transcript);
     }
 }

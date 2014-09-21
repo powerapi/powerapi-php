@@ -1,8 +1,8 @@
 <?php
 
-namespace PowerAPI;
+namespace PowerAPI\Data;
 
-/** Class used to hold assignment details
+/** Class used to hold assignment details.
  * @property array $category name of the assignment's category
  * @property array $description assignment's description
  * @property string $name assignment's name
