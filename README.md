@@ -1,3 +1,4 @@
+[![Code Climate](http://img.shields.io/codeclimate/github/powerapi/powerapi-php.svg?style=flat-square)](https://codeclimate.com/github/powerapi/powerapi-php)
 [![Packagist Version](http://img.shields.io/packagist/v/powerapi/powerapi-php.svg?style=flat-square)](https://packagist.org/packages/powerapi/powerapi-php)
 
 PowerAPI-php
@@ -7,7 +8,7 @@ Library for fetching information from PowerSchool SISes.
 Requirements
 ------------
 * PHP 5 >= 5.1.2.
-* PowerSchool >= 7.0.0; PowerSchool <= 7.6.2
+* PowerSchool 8.x; PowerSchool >= 7.1.0
 
 Install
 -----
