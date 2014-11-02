@@ -22,9 +22,9 @@ class Parser
             }
 
             $assignments[$assignment->sectionid][] = new Data\Assignment(Array(
-              'assignment' => $assignment,
-              'category' => $assignmentCategories[$assignment->categoryId],
-              'score' => Parser::requireDefined($assignmentScores[$assignment->id])
+                'assignment' => $assignment,
+                'category' => $assignmentCategories[$assignment->categoryId],
+                'score' => Parser::requireDefined($assignmentScores[$assignment->id])
             ));
         }
 
@@ -67,17 +67,17 @@ class Parser
      */
     static public function finalGrades($rawFinalGrades)
     {
-      $finalGrades = Array();
+        $finalGrades = Array();
 
-      foreach ($rawFinalGrades as $finalGrade) {
-        if (!isset($finalGrades[$finalGrade->sectionid])) {
-          $finalGrades[$finalGrade->sectionid] = [];
+        foreach ($rawFinalGrades as $finalGrade) {
+            if (!isset($finalGrades[$finalGrade->sectionid])) {
+                $finalGrades[$finalGrade->sectionid] = [];
+            }
+
+            $finalGrades[$finalGrade->sectionid][] = $finalGrade;
         }
 
-        $finalGrades[$finalGrade->sectionid][] = $finalGrade;
-      }
-
-      return $finalGrades;
+        return $finalGrades;
     }
 
     /** Group a reportingTerms dump by term ID
@@ -86,13 +86,13 @@ class Parser
      */
     static public function reportingTerms($rawReportingTerms)
     {
-      $reportingTerms = Array();
+        $reportingTerms = Array();
 
-      foreach ($rawReportingTerms as $reportingTerm) {
-        $reportingTerms[$reportingTerm->id] = $reportingTerm->abbreviation;
-      }
+        foreach ($rawReportingTerms as $reportingTerm) {
+            $reportingTerms[$reportingTerm->id] = $reportingTerm->abbreviation;
+        }
 
-      return $reportingTerms;
+        return $reportingTerms;
     }
 
     /** Create a Section object for each section
@@ -105,25 +105,25 @@ class Parser
      */
     static public function sections($rawSections, $assignments, $finalGrades, $reportingTerms, $teachers)
     {
-      $sections = Array();
+        $sections = Array();
 
-      foreach ($rawSections as $section) {
-        // PowerSchool will return sections that have not started yet.
-        // These are stripped since none of the official channels display them.
-        if (strtotime($section->enrollments->startDate) > time()) {
-            continue;
+        foreach ($rawSections as $section) {
+            // PowerSchool will return sections that have not started yet.
+            // These are stripped since none of the official channels display them.
+            if (strtotime($section->enrollments->startDate) > time()) {
+                continue;
+            }
+
+            $sections[] = new Data\Section(Array(
+                'assignments' => Parser::requireDefined($assignments[$section->id]),
+                'finalGrades' => Parser::requireDefined($finalGrades[$section->id]),
+                'reportingTerms' => $reportingTerms,
+                'section' => $section,
+                'teacher' => $teachers[$section->teacherID]
+            ));
         }
 
-        $sections[] = new Data\Section(Array(
-          'assignments' => Parser::requireDefined($assignments[$section->id]),
-          'finalGrades' => Parser::requireDefined($finalGrades[$section->id]),
-          'reportingTerms' => $reportingTerms,
-          'section' => $section,
-          'teacher' => $teachers[$section->teacherID]
-        ));
-      }
-
-      return $sections;
+        return $sections;
     }
 
     /** Group a teachers dump by teacher ID
@@ -132,13 +132,13 @@ class Parser
      */
     static public function teachers($rawTeachers)
     {
-      $teachers = Array();
+        $teachers = Array();
 
-      foreach ($rawTeachers as $teacher) {
-        $teachers[$teacher->id] = $teacher;
-      }
+        foreach ($rawTeachers as $teacher) {
+            $teachers[$teacher->id] = $teacher;
+        }
 
-      return $teachers;
+        return $teachers;
     }
 
     /**
