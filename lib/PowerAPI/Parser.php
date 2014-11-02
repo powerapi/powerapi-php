@@ -95,6 +95,20 @@ class Parser
         return $reportingTerms;
     }
 
+    /** Check if $a should be displayed before or after $b
+     * @param array $a section A
+     * @param array $b section B
+     * @return int -1 if $a should go first, 0 if $a = $b, 1 if $b should go first
+     */
+    static public function sectionsSort($a, $b)
+    {
+        if ($a->expression !== $b->expression) {
+            return strcmp($a->expression, $b->expression);
+        } else {
+            return strcmp($a->name, $b->name);
+        }
+    }
+
     /** Create a Section object for each section
      * @param array $rawSections sections dump to be parsed
      * @param array $assignments array of assignments grouped by section ID
@@ -122,6 +136,8 @@ class Parser
                 'teacher' => $teachers[$section->teacherID]
             ));
         }
+
+        usort($sections, array('PowerAPI\Parser', 'sectionsSort'));
 
         return $sections;
     }
