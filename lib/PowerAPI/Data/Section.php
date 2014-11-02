@@ -4,6 +4,7 @@ namespace PowerAPI\Data;
 
 /** Class used to hold section details.
  * @property array $assignments contains the section's assignments
+ * @property array $expression section's expression
  * @property array $finalGrades final grades, grouped by term abbreviation
  * @property string $name section's name
  * @property string $roomName section's room name
@@ -19,6 +20,8 @@ class Section extends BaseObject
     public function __construct($details)
     {
         $this->details['assignments'] = $details['assignments'];
+
+        $this->details['expression'] = $details['section']->expression;
 
         if ($details['finalGrades'] !== null) {
             $this->details['finalGrades'] = Array();
