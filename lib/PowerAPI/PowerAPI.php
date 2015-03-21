@@ -49,4 +49,44 @@ class PowerAPI
 
         return new Data\Student($url, $session, $fetch_transcript);
     }
+
+    /**
+     * Fetch a URL for a PowerSchool install using a district code
+     * @param string $code district code
+     * @return string
+    */
+    static public function districtLookup($code)
+    {
+        $curlResource = curl_init('https://powersource.pearsonschoolsystems.com/services/rest/remote-device/v2/get-district/'.$code);
+        curl_setopt($curlResource, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlResource, CURLOPT_HTTPHEADER, array(
+            'Accept: application/json'
+        ));
+
+        $details = curl_exec($curlResource);
+
+        // Return false if we couldn't connect or if the district doesn't exist.
+        if ($details === FALSE || $details === '') {
+            return false;
+        }
+
+        $details = json_decode($details);
+
+        if ($details->district->server->sslEnabled !== 1) {
+            $url = 'https://'.$details->district->server->serverAddress;
+        } else {
+            $url = 'http://'.$details->district->server->serverAddress;
+        }
+
+        if (
+            ($details->district->server->sslEnabled == 1 && $details->district->server->portNumber == 443) ||
+            ($details->district->server->sslEnabled == 0 && $details->district->server->portNumber == 80)
+            ) {
+            $url .= '/';
+        } else {
+            $url .= ':'.$details->district->server->portNumber.'/';
+        }
+
+        return $url;
+    }
 }
