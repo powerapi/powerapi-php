@@ -26,7 +26,7 @@ class Section extends BaseObject
         if ($details['finalGrades'] !== null) {
             $this->details['finalGrades'] = Array();
 
-            foreach ($this->details['finalGrades'] as $finalGrade) {
+            foreach ($details['finalGrades'] as $finalGrade) {
                 $this->details['finalGrades'][
                     $details['reportingTerms'][$finalGrade->reportingTermId]
                 ] = $finalGrade->percent;
