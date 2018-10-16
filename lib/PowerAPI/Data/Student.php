@@ -73,8 +73,8 @@ class Student extends BaseObject
                 'serverInfo' => (object) Array(
                     'apiVersion' => $this->soap_session->serverInfo->apiVersion
                 ),
-                'serverCurrentTime' => '2012-12-26T21:47:23.792Z', # I really don't know.
-                'userType' => '2'
+                'serverCurrentTime' => $this->soap_session->serverCurrentTime,
+                'userType' => $this->soap_session->userType
             ),
             'studentIDs' => $this->soap_session->studentIDs,
             'qil' => (object) Array(
