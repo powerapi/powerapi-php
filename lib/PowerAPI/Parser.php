@@ -15,7 +15,8 @@ class Parser
     static public function assignments($rawAssignments, $assignmentCategories, $assignmentScores)
     {
         $assignments = Array();
-
+        
+        if(!is_array($rawAssignments)) $rawAssignments = Array($rawAssignments);
         foreach ($rawAssignments as $assignment) {
             if (!isset($assignments[$assignment->sectionid])) {
                 $assignments[$assignment->sectionid] = Array();
@@ -39,6 +40,7 @@ class Parser
     {
         $assignmentCategories = Array();
 
+        if(!is_array($rawAssignmentCategories)) $rawAssignmentCategories = Array($rawAssignmentCategories);
         foreach ($rawAssignmentCategories as $assignmentCategory) {
             $assignmentCategories[$assignmentCategory->id] = $assignmentCategory;
         }
@@ -54,6 +56,7 @@ class Parser
     {
         $assignmentScores = Array();
 
+        if(!is_array($rawAssignmentScores)) $rawAssignmentScores = Array($rawAssignmentScores);
         foreach ($rawAssignmentScores as $assignmentScore) {
             $assignmentScores[$assignmentScore->assignmentId] = $assignmentScore;
         }
@@ -69,6 +72,7 @@ class Parser
     {
         $finalGrades = Array();
 
+        if(!is_array($rawFinalGrades)) $rawFinalGrades = Array($rawFinalGrades);
         foreach ($rawFinalGrades as $finalGrade) {
             if (!isset($finalGrades[$finalGrade->sectionid])) {
                 $finalGrades[$finalGrade->sectionid] = [];
@@ -88,6 +92,7 @@ class Parser
     {
         $reportingTerms = Array();
 
+        if(!is_array($rawReportingTerms)) $rawReportingTerms = Array($rawReportingTerms);
         foreach ($rawReportingTerms as $reportingTerm) {
             $reportingTerms[$reportingTerm->id] = $reportingTerm->abbreviation;
         }
@@ -121,6 +126,7 @@ class Parser
     {
         $sections = Array();
 
+        if(!is_array($rawSections)) $rawSections = Array($rawSections);
         foreach ($rawSections as $section) {
             // PowerSchool will return sections that have not started yet.
             // These are stripped since none of the official channels display them.
@@ -150,6 +156,7 @@ class Parser
     {
         $teachers = Array();
 
+        if(!is_array($rawTeachers)) $rawTeachers = Array($rawTeachers);
         foreach ($rawTeachers as $teacher) {
             $teachers[$teacher->id] = $teacher;
         }
