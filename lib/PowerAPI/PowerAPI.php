@@ -32,11 +32,10 @@ class PowerAPI
         ));
 
         $login = $client->__call(
-            'login',
+            'loginToPublicPortal',
             Array(
                 'username' => $username,
-                'password' => $password,
-                'userType' => 2
+                'password' => $password
             )
         );
 
